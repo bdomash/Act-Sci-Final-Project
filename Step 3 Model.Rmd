@@ -1,0 +1,48 @@
+---
+title: "Step 3"
+author: "Brandon Domash & Thomas Waltmans"
+date: "11/12/2018"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data = read.csv('Full Data step 3 new.csv')
+data=data[,-(1)]
+data$lnGDP = log(data$gdp)
+data$gdp = NULL
+
+model = lm(data$Happiness.Score~data$lnGDP+data$internet.users+data$life.expectancy+data$schooling.years
+   +data$mortality.rate+data$improved.drinking+data$women.parliament+data$suicide.rate+data$unemployment+data$Region)
+summary(model)
+
+anov = anova(model); anov
+ssr = anov[1:17,1:2]
+
+ess = anov[18,2]
+ess_df = anov[18,1]
+ess_mse = ess/ess_df
+
+rss= sum(ssr$`Sum Sq`)
+rss_df = sum(ssr$Df)
+rss_mse = rss/rss_df
+
+tss = ess+rss
+tdf = rss_df+ess_df
+
+```
+The regression sum of squares is `r rss`  
+The regression degrees of freedom is `r rss_df`  
+The regresion mean square is `r rss_mse`  
+
+The error sum of squares is `r ess`  
+The error degrees of freedom is `r ess_df`  
+The error mean square is `r ess_mse`  
+
+The total sum of squares is `r tss`  
+The total degrees of freedom is `r tdf`  
